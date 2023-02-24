@@ -29,6 +29,7 @@ export const content = {
   width: '100vw',
   height: '100vh',
   padding: '50px',
-  background: '#108ee9',
+  background: 'lightblue',
   borderRadius: '4px',
+  textAlign: 'center',
 };

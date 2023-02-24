@@ -19,6 +19,7 @@ function LayoutRender({
   resultsRate,
   pageRate,
   total_resultsRate,
+  total_pagesRate,
 }) {
   const isMovie =
     results.length || (resultsRate.length && isTabFlag === 'Rated') ? (
@@ -48,20 +49,23 @@ function LayoutRender({
       <Footer style={style.footerStyle}>
         {isTabFlag === 'Search' ? (
           <Pagination
+            showSizeChanger={false}
             current={page}
             total={total_results}
             defaultPageSize={20}
-            pageSizeOptions={[20]}
             onChange={setPage}
           />
         ) : (
-          <Pagination
-            current={pageRate}
-            total={total_resultsRate}
-            defaultPageSize={20}
-            pageSizeOptions={[20]}
-            onChange={setPage}
-          />
+          total_pagesRate > 1 && (
+            <Pagination
+              showSizeChanger={false}
+              current={pageRate}
+              total={total_resultsRate}
+              defaultPageSize={20}
+              pageSizeOptions={[20]}
+              onChange={setPage}
+            />
+          )
         )}
       </Footer>
     </Layout>

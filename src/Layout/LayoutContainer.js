@@ -20,6 +20,7 @@ class LayoutContainer extends React.Component {
     total_results: 0,
     isLoading: true,
     serverError: false,
+    error: 'сервер не отвечает',
     search: 'return',
     isTabFlag: 'Search',
     genres: [],
@@ -28,7 +29,15 @@ class LayoutContainer extends React.Component {
   getLoad(ofPage, ofSearch) {
     getInfo()
       .then(async (genres) => await genres.genres)
-      .then((arr) => this.setState({ genres: arr }));
+      .then((arr) => this.setState({ genres: arr }))
+      .catch(() =>
+        this.setState((state) => {
+          return {
+            ...state,
+            serverError: true,
+          };
+        })
+      );
     getCard(ofPage, ofSearch)
       .then((arrData) => {
         console.log(arrData);
@@ -105,9 +114,18 @@ class LayoutContainer extends React.Component {
 
   componentDidMount() {
     if (!localStorage.getItem('session')) {
-      getGuest().then((res) => {
-        localStorage.setItem('session', res.guest_session_id);
-      });
+      getGuest()
+        .then((res) => {
+          localStorage.setItem('session', res.guest_session_id);
+        })
+        .catch(() =>
+          this.setState((state) => {
+            return {
+              ...state,
+              serverError: true,
+            };
+          })
+        );
     } else {
       getRated()
         .then((arrDataRate) => {
@@ -145,20 +163,14 @@ class LayoutContainer extends React.Component {
     if (this.state.serverError) {
       return (
         <Space direction="vertical" style={content}>
-          <Alert message="Error" description="This is an error message about copywriting." type="error" showIcon />
+          <Alert message="Error" description={this.state.error} type="error" showIcon />
         </Space>
       );
     } else {
       if (this.state.isLoading) {
         return (
           <Space direction="vertical" style={content}>
-            <Spin tip="Loading...">
-              <Alert
-                message="Alert message title"
-                description="Further details about the context of this alert."
-                type="info"
-              />
-            </Spin>
+            <Spin size="large" />
           </Space>
         );
       } else {
